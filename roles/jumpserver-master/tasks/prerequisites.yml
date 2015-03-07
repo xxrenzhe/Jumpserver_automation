@@ -1,0 +1,8 @@
+---
+# file: prerequisites.yml
+
+- name: Jumpserver | Prepare prerequisite packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - "expect"
+    - "patch"

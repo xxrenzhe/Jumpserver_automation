@@ -1,0 +1,20 @@
+---
+# file: install_nodejs.yml
+
+- name: Nodejs | Copy latest nodejs original package
+  copy: src={{ nodejs_package }} dest={{ package_original_directory}}/{{ nodejs_package }} owner={{ common_user }} group={{ common_group }} mode=0644
+  
+- name: Nodejs | Untar latest Python package
+  shell: /bin/tar zxvf {{ package_original_directory}}/{{ nodejs_package }} -C {{ package_untar_directory}}
+
+- name: Nodejs | Installed latest nodejs
+  script: nodejs_install.sh {{ package_untar_directory }}/{{ nodejs_version }}  {{ common_install_directory }} creates={{ common_install_directory }}/node/bin/node
+
+- name: Nodejs | Ensure nodejs installed owner
+  file: path={{ common_install_directory }}/node state=directory owner={{ common_user }} group={{ common_group }} recurse=yes
+
+- name: Nodejs | Copy nodejs path file node.sh
+  template: src=node.sh.j2 dest=/etc/profile.d/node.sh owner=root group=root mode=0644
+
+- name: Nodejs | Unarchive nodejs modules
+  unarchive: src=node_modules.tar.bz2 dest={{ common_install_directory }}/jumpserver/webroot/AutoSa/websocket

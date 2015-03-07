@@ -1,0 +1,17 @@
+---
+# file: sudo_by_ldap.yml
+
+- name: Sudo by Ldap | check sudo version
+  shell: /usr/bin/sudo -V|head -1|awk '{print $3}'
+  register: sudo_version
+  ignore_errors: yes
+
+- name: Sudo by Ldap | Config ldapserver in file sudo-ldap.conf
+  lineinfile: dest=/etc/sudo-ldap.conf line="{{ item }}" state=present
+  with_items:
+    - "uri ldap://{{ ldap_server }}"
+    - "Sudoers_base ou=Sudoers,dc={{ ldap_dc_name }},dc=com"
+  when: sudo_version.stdout == '1.8.6p3'
+
+- name: Sudo by Ldap | Ensure sudoers order in file nsswitch.conf
+  lineinfile: 'dest=/etc/nsswitch.conf line="Sudoers: files ldap" state=present'

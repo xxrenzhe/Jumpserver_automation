@@ -1,0 +1,39 @@
+---
+# file: install_mysql.yml
+
+- name: Mysqlserver | Install mysql server packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - "mysql"
+    - "mysql-server"
+    - "mysql-devel"
+    - "python-devel"
+    - "zlib"
+    - "zlib-devel"
+
+- name: Mysqlserver | Start mysql service
+  service: name=mysqld state=started
+
+- name: Mysqlserver | Initial mysql 1
+  copy: src=mysql_secure_installation.exp dest={{ package_untar_directory }}/mysql_secure_installation.exp owner={{ common_user }} group={{ common_group }} mode=0644
+
+- name: Mysqlserver | Initial mysql 2
+  shell: /usr/bin/expect mysql_secure_installation.exp {{ root_mysql_passwd }} chdir={{ package_untar_directory }} removes=/var/lib/mysql/test
+
+- name: Mysqlserver | Ensure python-mysqldb existed 1
+  unarchive: src={{ python_mysqldb_package }} dest={{ package_untar_directory }} owner={{ common_user }} group={{ common_group }}
+
+- name: Mysqlserver | Ensure python-mysqldb existed 2
+  script: python_mysqldb_install.sh {{ package_untar_directory }}/{{ python_mysqldb_version }}
+
+- name: Mysqlserver | Create mysql database jumpserver
+  mysql_db: login_user=root login_password={{ root_mysql_passwd }} name={{ jumpserver_db }} encoding=utf8 state=present
+
+- name: Mysqlserver | Add mysql user jumpserver
+  mysql_user: login_user=root login_password={{ root_mysql_passwd }} name={{ jumpserver_mysql_user }} password={{ jumpserver_mysql_passwd }} host={{ item }} priv=jumpserver.*:ALL state=present
+  with_items:
+    - "localhost"
+    - "127.0.0.1"
+
+- name: Mysqlserver | Copy .my.cnf file with jumpserver password credentials to common_user folder
+  template: src=my.cnf.j2 dest={{ common_install_directory }}/.my.cnf owner={{ common_user }} group={{ common_group }} mode=0600

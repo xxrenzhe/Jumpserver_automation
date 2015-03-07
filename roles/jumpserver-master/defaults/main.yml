@@ -1,0 +1,41 @@
+---
+# main.yml
+
+# common configuration
+package_original_directory: /home/wenba/software/tar
+package_untar_directory: /home/wenba/software/src
+common_install_directory: /home/wenba
+common_user: wenba
+common_group: wenba
+
+# ldapserver
+ldap_dc_name: "wenba"
+ldap_rootpw: 'KSVpdON1QupsfzOH3jRXZ3aevNARJOAF'
+ldap_rootpw_crypt: '{SSHA}yBkASWgRC0Jxzqtzkq0j5bIcn9/DtrIq'
+ldap_server: "192.168.1.2"
+
+# mysql server
+initial_mysql_passwd: ""
+root_mysql_passwd: "CfEGEK1zoq5sXYn02AiC5SiLlRRjzF6X"
+jumpserver_db: "jumpserver"
+jumpserver_mysql_user: "jumpserver"
+jumpserver_mysql_passwd: "stLvhhgSgA8dV8Le0FBPbFO7by40Dkyc"
+
+# Python 2.7
+python_version: 'Python-2.7.8'
+python_package: 'Python-2.7.8.tgz'
+python_mysqldb_version: 'MySQL-python-1.2.5'
+python_mysqldb_package: 'MySQL-python-1.2.5.zip'
+
+setuptools_version: "pypa-setuptools-8e8c50925f18"
+pip_version: "pip-1.5.6"
+
+# websocket
+web_socket_host: "192.168.1.2:3000"
+
+# Jumpserver
+jumpserver_key: "Esddf3gWxYPshwNg"
+
+# Nodejs
+nodejs_package: "node-v0.10.33.tar.gz"
+nodejs_version: "node-v0.10.33"

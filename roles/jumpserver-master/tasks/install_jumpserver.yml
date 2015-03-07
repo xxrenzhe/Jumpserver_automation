@@ -1,0 +1,27 @@
+---
+# file: install_jumpserver.yml
+
+- name: Jumpserver | Ensure git existed
+  yum: name=git state=latest
+
+- name: Jumpserver | Git clone source repository
+  shell: /usr/bin/git clone https://github.com/ibuler/jumpserver.git chdir={{ common_install_directory }}
+  ignore_errors: yes 
+
+- name: Jumpserver | Ensure jumpserver installed directory mode
+  file: path={{ common_install_directory }}/jumpserver owner={{ common_user }} group={{ common_group }} recurse=yes
+
+- name: Jumpserver | Install some packages by pip 
+  pip: requirements={{ common_install_directory }}/jumpserver/scripts/requirements.txt executable=/usr/local/bin/pip2.7 extra_args='-i http://pypi.douban.com/simple' 
+
+- name: Jumpserver | Copy jumpserver config file jumpserver.conf
+  template: src=jumpserver.conf.j2 dest={{ common_install_directory }}/jumpserver/jumpserver.conf owner={{ common_user }} group={{ common_group }} mode=0644
+
+- name: Jumpserver | Ensure jumpserver logs mode 777
+  file: path={{ common_install_directory }}/jumpserver/logs state=directory mode=0777
+
+- name: Jumpserver | Sync django db 1
+  copy: src=jumpserver_syncdb.exp dest={{ common_install_directory }}/jumpserver/webroot/AutoSa/jumpserver_syncdb.exp owner={{ common_user }} group={{ common_group }} mode=0644
+
+- name: Jumpserver | Sync django db 2
+  shell: /usr/bin/expect jumpserver_syncdb.exp chdir={{ common_install_directory }}/jumpserver/webroot/AutoSa

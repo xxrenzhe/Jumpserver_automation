@@ -1,0 +1,21 @@
+---
+# file: post_install.yml
+
+- name: Post Install | Ensure sshd not allowed to login by password
+  lineinfile: dest=/etc/ssh/sshd_config regexp='^PasswordAuthentication' line='PasswordAuthentication no' 
+  notify: restart sshd
+
+- name: Post Install | Copy jumpserver.sh to /etc/profile.d/
+  template: src=jumpserver.sh.j2  dest=/etc/profile.d/jumpserver.sh owner=root group=root mode=0644
+  
+- name: Post Install | Restart jumpserver service
+  debug: msg="You should start service manually; {{common_install_directory}}/jumpserver/runserver"
+
+- name: Post Install | Access web browser to compete installation
+  debug: msg="You should access http://{{ ldap_server }}/install to compete jumpserver installation."
+
+- name: Post Install | Access web browser to administrate jumpserver
+  debug: msg="You should access http://{{ ldap_server }} to administrate jumpserver, the default user and password all are admin."
+
+- name: Post Install | Or you just use ldapadminexe to connect ldap server (only windows)
+  debug: msg="The ldapadminexe download url is http://iweb.dl.sourceforge.net/project/ldapadmin/ldapadmin/1.6/LdapAdminExe-1.6.zip ."

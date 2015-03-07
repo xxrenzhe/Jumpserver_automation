@@ -1,0 +1,16 @@
+#!/bin/bash
+# Function : start jumpserver service
+# CTime : 2015.01.27
+# Author : Jason.Yu
+
+if [ $USER == 'root' ] || [ $USER == 'wenba' ];then
+    echo "You are superuser,please operate carefully !"
+else
+    python {{ common_install_directory }}/jumpserver/jumpserver.py
+    if [ $USER == 'devops' ];then
+	echo
+    else
+	exit 3
+	echo
+    fi
+fi

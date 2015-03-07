@@ -1,0 +1,20 @@
+---
+# file: sudo_by_ldap.yml
+
+- name: Sudo by Ldap | Copy sudo schema file sudo.schema
+  copy: src=sudo.schema dest=/etc/openldap/schema/sudo.schema owner=root group=root mode=0644
+
+- name: Sudo by Ldap | Ensure sudo.schema included in slapd.conf
+  lineinfile: dest=/etc/openldap/slapd.conf insertafter="^include" line="include  /etc/openldap/schema/sudo.schema" state=present
+
+- name: Sudo by Ldap | Reconfig ldapserver and restart sldapd service
+  script: start_slapd.sh 
+
+- name: Sudo by Ldap | Copy ldapadd config file sudo.ldif
+  template: src={{ item.src }} dest={{ package_untar_directory }}/{{ item.dest }} owner=root group=root mode=0644
+  with_items:
+    - src: sudo.ldif.j2
+      dest: sudo.ldif
+
+- name: Sudo by Ldap | Config ldapadd just for sudo
+  shell: /usr/bin/expect ldapadd.exp {{ ldap_rootpw }} sudo.ldif chdir={{ package_untar_directory }} removes={{ package_untar_directory }}/sudo.ldif

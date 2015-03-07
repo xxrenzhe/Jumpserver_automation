@@ -1,0 +1,39 @@
+---
+# file: install_ldapserver.yml
+
+- name: Ldapserver | Prepare prerequisite packages
+  yum: name={{ item }} state=present
+  with_items:
+    - openldap
+    - openldap-servers
+    - openldap-clients
+    - openldap-devel
+
+- name: Ldapserver | Copy ldapserver configure file slapd.conf
+  template: src=slapd.conf.j2 dest=/etc/openldap/slapd.conf owner=root group=root mode=0644
+
+- name: Ldapserver | Copy ldapserver DB configure file DB_CONFIG
+  copy: src=DB_CONFIG dest=/var/lib/ldap/DB_CONFIG owner=root group=root mode=0644
+
+- name: Ldapserver | Config rsyslog to log ldap information
+  lineinfile: dest=/etc/rsyslog.conf insertafter="^local7" line="local4.*  /var/log/ldap.log" state=present
+  notify: restart rsyslog
+
+- name: Ldapserver | Config ldapserver and start sldapd service
+  script: start_slapd.sh 
+
+- name: Ldapserver | Copy ldapadd config file base.ldif group.ldif and passwd.ldif
+  template: src={{ item.src }} dest={{ package_untar_directory }}/{{ item.dest }} owner=root group=root mode=0644
+  with_items:
+    - src: base.ldif.j2
+      dest: base.ldif
+    - src: group.ldif.j2
+      dest: group.ldif
+    - src: passwd.ldif.j2
+      dest: passwd.ldif
+
+- name: Ldapserver | Config ldapadd 1
+  template: src=ldapadd.exp.j2 dest={{ package_untar_directory }}/ldapadd.exp owner={{ common_user }} group={{ common_group }} mode=0644
+
+- name: Ldapserver | Config ldapadd 2
+  shell: /usr/bin/expect ldapadd.exp {{ ldap_rootpw }} base.ldif group.ldif passwd.ldif chdir={{ package_untar_directory }} removes={{ package_untar_directory }}/base.ldif

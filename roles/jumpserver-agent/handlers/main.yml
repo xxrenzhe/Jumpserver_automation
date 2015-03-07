@@ -1,0 +1,7 @@
+---
+# handlers file for role jumpserver-master
+- name: restart rsyslog
+  service: name=rsyslog state=restarted enabled=yes
+
+- name: restart sshd
+  service: name=sshd state=restarted enabled=yes

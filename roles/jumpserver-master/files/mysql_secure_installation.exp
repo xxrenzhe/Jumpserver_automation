@@ -1,0 +1,30 @@
+#!/usr/bin/expect -f
+
+if { [llength $argv] < 1 } {
+        puts "Usage: $argv0 need root_mysql_passwd"
+        exit 1
+}
+
+set timeout 10
+set root_mysql_passwd [lindex $argv 0]
+
+spawn /bin/sh /usr/bin/mysql_secure_installation
+expect "Enter current password for root (enter for none):"
+send "\r"
+expect "Set root password?"
+send "Y\r"
+expect "New password:"
+send "$root_mysql_passwd\r"
+expect "Re-enter new password:"
+send "$root_mysql_passwd\r"
+expect "Remove anonymous users?"
+send "Y\r"
+expect "Disallow root login remotely?"
+send "Y\r"
+expect "Remove test database and access to it?"
+send "Y\r"
+expect "Reload privilege tables now?"
+send "Y\r"
+
+send "exit\r"
+expect eof

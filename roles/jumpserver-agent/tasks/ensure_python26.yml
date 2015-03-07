@@ -1,0 +1,5 @@
+---
+# file: ensure_python26.yml
+
+- name: Ldapagent | Ensure yum to use python 2.6
+  script: ensure_python26.sh

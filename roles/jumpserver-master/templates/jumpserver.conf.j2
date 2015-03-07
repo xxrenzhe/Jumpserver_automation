@@ -1,0 +1,16 @@
+#coding:utf-8
+
+[db]
+host = 127.0.0.1
+port = 3306
+user = {{ jumpserver_mysql_user }}
+password = {{ jumpserver_mysql_passwd }}
+db = {{ jumpserver_db }}
+
+[jumpserver]
+key = {{ jumpserver_key }}
+ldap_host = ldap://127.0.0.1:389
+ldap_base_dn = dc={{ ldap_dc_name }},dc=com
+admin_cn = cn=admin,dc={{ ldap_dc_name }},dc=com
+admin_pass = {{ ldap_rootpw }}
+web_socket_host = {{ web_socket_host }}

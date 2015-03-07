@@ -1,0 +1,10 @@
+#!/usr/bin/expect -f
+
+set timeout 10
+
+spawn /usr/bin/python manage.py syncdb
+expect "Would you like to create one now?"
+send "no\r"
+send "exit\r"
+
+expect eof

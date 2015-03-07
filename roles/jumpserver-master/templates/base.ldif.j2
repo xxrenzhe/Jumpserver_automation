@@ -1,0 +1,64 @@
+dn: dc={{ ldap_dc_name }},dc=com
+dc: {{ ldap_dc_name }}
+objectClass: top
+objectClass: domain
+
+dn: ou=Hosts,dc={{ ldap_dc_name }},dc=com
+ou: Hosts
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=Rpc,dc={{ ldap_dc_name }},dc=com
+ou: Rpc
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=Services,dc={{ ldap_dc_name }},dc=com
+ou: Services
+objectClass: top
+objectClass: organizationalUnit
+
+dn: nisMapName=netgroup.byuser,dc={{ ldap_dc_name }},dc=com
+nismapname: netgroup.byuser
+objectClass: top
+objectClass: nisMap
+
+dn: ou=Mounts,dc={{ ldap_dc_name }},dc=com
+ou: Mounts
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=Networks,dc={{ ldap_dc_name }},dc=com
+ou: Networks
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=People,dc={{ ldap_dc_name }},dc=com
+ou: People
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=Group,dc={{ ldap_dc_name }},dc=com
+ou: Group
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=Netgroup,dc={{ ldap_dc_name }},dc=com
+ou: Netgroup
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=Protocols,dc={{ ldap_dc_name }},dc=com
+ou: Protocols
+objectClass: top
+objectClass: organizationalUnit
+
+dn: ou=Aliases,dc={{ ldap_dc_name }},dc=com
+ou: Aliases
+objectClass: top
+objectClass: organizationalUnit
+
+dn: nisMapName=netgroup.byhost,dc={{ ldap_dc_name }},dc=com
+nismapname: netgroup.byhost
+objectClass: top
+objectClass: nisMap

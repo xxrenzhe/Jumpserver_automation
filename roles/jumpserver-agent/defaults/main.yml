@@ -1,0 +1,6 @@
+---
+# main.yml
+
+# ldapserver
+ldap_dc_name: "wenba"
+ldap_server: "192.168.1.2"

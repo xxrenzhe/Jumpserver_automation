@@ -1,0 +1,6 @@
+---
+# file: main.yml
+
+- include: ensure_python26.yml
+- include: install_ldapclient.yml
+- include: sudo_by_ldap_agent.yml

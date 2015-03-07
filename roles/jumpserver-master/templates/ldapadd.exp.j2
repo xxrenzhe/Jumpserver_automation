@@ -1,0 +1,20 @@
+#!/usr/bin/expect -f
+
+if { [llength $argv] < 2 } { 
+	puts "Usage: $argv0 need ldap_rootpw ldif_file"
+	exit 1
+}
+
+set ldap_rootpw [lindex $argv 0]
+set ldif_list [lrange $argv 1 end]
+set timeout 10
+
+foreach ldif $ldif_list {
+	spawn /usr/bin/ldapadd -x -W -D "cn=admin,dc={{ ldap_dc_name }},dc=com" -f $ldif
+	expect "Enter LDAP Password:"
+	sleep 0.05
+	send "$ldap_rootpw\r"
+}
+
+send "exit\r"
+expect eof

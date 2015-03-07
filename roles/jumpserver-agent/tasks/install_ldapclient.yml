@@ -1,0 +1,26 @@
+---
+# file: install_ldapagent.yml
+
+- name: Ldapagent | Prepare prerequisite packages
+  yum: name={{ item }} state=latest
+  with_items:
+    - "openldap"
+    - "openldap-clients"
+    - "nss-pam-ldapd"
+    - "pam_ldap"
+
+- name: Ldapagent | Config auto make home dir
+  lineinfile: dest=/etc/pam.d/system-auth-ac line="session required pam_mkhomedir.so skel=/etc/skel umask=0077" state=present insertafter=EOF
+
+- name: Ldapagent | Backup authconfig
+  shell: /usr/bin/python2.6 /usr/sbin/authconfig --savebackup=auth.bak
+  ignore_errors: yes
+
+- name: Ldapagent | Config to use ldap authentication
+  #shell: /usr/sbin/authconfig --enableldap --enableldapauth --enablemkhomedir --disableforcelegacy --disablesssd --disablesssdauth --ldapserver={{ ldap_server }} --ldapbasedn="dc={{ ldap_dc_name }},dc=com" --update
+  shell: /usr/bin/python2.6 /usr/sbin/authconfig --enableldap --enableldapauth --enablemkhomedir --enableforcelegacy --disablesssd --disablesssdauth --ldapserver={{ ldap_server }} --ldapbasedn="dc={{ ldap_dc_name }},dc=com" --update
+  ignore_errors: yes
+
+- name: Ldapagent | Ensure sshd allowed to login by password
+  lineinfile: dest=/etc/ssh/sshd_config regexp='^PasswordAuthentication' line='PasswordAuthentication yes'
+  notify: restart sshd

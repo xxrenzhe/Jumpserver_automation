@@ -1,0 +1,42 @@
+---
+# file: install_python27.yml
+
+- name: Python27 | Prepare some prerequisite packages for python2.7
+  yum: name={{ item }} state=present
+  with_items:
+    - "xz"
+    - "gcc"
+    - "automake"
+    - "autoconf"
+    - "ncurses-devel"
+    - "gcc-c++"
+    - "bzip2"
+    - "bzip2-devel"
+    - "bzip2-libs"
+    - "zlib"
+    - "zlib-devel"
+    - "zlib-static"
+
+- name: Python27 | Copy latest Python original package
+  copy: src={{ python_package }} dest={{ package_original_directory}}/{{ python_package }} owner={{ common_user }} group={{ common_group }} mode=0644
+  
+- name: Python27 | Untar latest Python package
+  shell: /bin/tar zxvf {{ package_original_directory}}/{{ python_package }} -C {{ package_untar_directory}}
+
+- name: Python27 | Installed Python module bz2
+  script: python27_install_bz2.sh {{ package_untar_directory }}/{{ python_version }}
+
+- name: Python27 | Installed latest Python 
+  script: python27_install.sh {{ package_untar_directory }}/{{ python_version }}
+
+- name: Python27 | Unarchive setuptools
+  unarchive: src={{ setuptools_version }}.tar.gz dest={{ package_untar_directory }} copy=yes
+
+- name: Python27 | Install setuptools
+  shell: /usr/bin/python setup.py install chdir={{ package_untar_directory }}/{{ setuptools_version }}
+
+- name: Python27 | Unarchive pip
+  unarchive: src={{ pip_version }}.tar.gz dest={{ package_untar_directory }} copy=yes
+
+- name: Python27 | Install pip
+  shell: /usr/bin/python setup.py install chdir={{ package_untar_directory }}/{{ pip_version }}
