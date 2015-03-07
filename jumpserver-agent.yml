@@ -1,0 +1,6 @@
+---
+- hosts: client_test
+  remote_user: wenba
+  sudo: yes
+  roles:
+    - role: jumpserver-agent
